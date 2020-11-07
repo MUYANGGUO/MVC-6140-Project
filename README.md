@@ -45,9 +45,12 @@ python3 MVC.py './DATA/football.graph' 'BnB' 2.0 1
 ├── outputs (outputs folder, for submission)
 |   └── Solution Files
 |   └── Solution Trace Files
+ - - - - - - - - - - - - - - - - - - - - -
+|
 └── report (report folder)
     └── ProjectDescription.pdf
     └── ProjectReport.pdf
+|    
  - - - - - - - - Data Input  - - - - - - - 
 ├── DATA (data folder, not submitted)
 │   ├── ExampleSolutions
