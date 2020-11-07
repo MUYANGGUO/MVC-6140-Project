@@ -3,7 +3,7 @@ CSE-6140 Project - Minimum Vertex Cover
 
 ---
 
-MVC.py is the wrapper script for running the experiements. It handles input, outputs. 
+`MVC.py` is the wrapper script for running the experiements. It handles input, outputs. 
 
 ## MAN page:
 ```bash
