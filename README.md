@@ -37,10 +37,18 @@ python3 MVC.py './DATA/football.graph' 'BnB' 2.0 1
 ├── MVC.py (wrapper)
 ├── Approx.py (approximate method module)
 ├── BnB.py (exact method module)
-├── LS1.py (local search method 1)
-├── LS2.py (local search method 2)
+├── LS1.py (local search method 1 module)
+├── LS2.py (local search method 2 module)
 ├── README.md
 ├── LICENSE
+ - - - - - - -Output Folder  - - - - - - - 
+├── outputs (outputs folder, for submission)
+|   └── Solution Files
+|   └── Solution Trace Files
+└── report (report folder)
+    └── ProjectDescription.pdf
+    └── ProjectReport.pdf
+ - - - - - - - - Data Input  - - - - - - - 
 ├── DATA (data folder, not submitted)
 │   ├── ExampleSolutions
 │   │   ├── dummy1.sol
@@ -60,6 +68,6 @@ python3 MVC.py './DATA/football.graph' 'BnB' 2.0 1
 │   ├── power.graph
 │   ├── star.graph
 │   └── star2.graph
-└── report (report folder)
-    └── ProjectDescription.pdf
+ - - - - - - - - - - - - - - - - - - - -
+
 ```
