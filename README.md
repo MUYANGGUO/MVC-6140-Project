@@ -28,3 +28,38 @@ optional arguments:
 ```zsh
 python3 MVC.py './DATA/football.graph' 'BnB' 2.0 1  
 ```
+
+---
+
+## Structure:
+```tree
+.
+├── MVC.py (wrapper)
+├── Approx.py (approximate method module)
+├── BnB.py (exact method module)
+├── LS1.py (local search method 1)
+├── LS2.py (local search method 2)
+├── README.md
+├── LICENSE
+├── DATA (data folder, not submitted)
+│   ├── ExampleSolutions
+│   │   ├── dummy1.sol
+│   │   ├── dummy2.sol
+│   │   ├── email.sol
+│   │   └── jazz.sol
+│   ├── as-22july06.graph
+│   ├── delaunay_n10.graph
+│   ├── dummy1.graph
+│   ├── dummy2.graph
+│   ├── email.graph
+│   ├── football.graph
+│   ├── hep-th.graph
+│   ├── jazz.graph
+│   ├── karate.graph
+│   ├── netscience.graph
+│   ├── power.graph
+│   ├── star.graph
+│   └── star2.graph
+└── report (report folder)
+    └── ProjectDescription.pdf
+```
