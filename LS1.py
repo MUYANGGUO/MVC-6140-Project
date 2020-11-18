@@ -1,7 +1,7 @@
 import networkx as nx
 import time
-import random
-from random import shuffle
+# import random
+# from random import shuffle
 # from itertools import combinations
 
 def LS1(graph, timeLimit, seed):
@@ -23,12 +23,11 @@ def LS1(graph, timeLimit, seed):
 			print(j)
 		# print(graph._node)
 		# print(graph.edges.data())
-		judge = local_search(graph, coloredList, blankList, removedNodes)
+		judge = local_search(graph, coloredList, blankList, iteration, seed)
 		timeNow = time.clock() - startTime
 		print('judge is %d, timeNow is %f, timeLimit is %f' %(judge, timeNow, timeLimit))
 		k -= nodeRemovePerStep
 		iteration += 1
-	# add the last removed nodes
 	add_nodes(graph, removedNodes, coloredList, blankList)
 	print('final solution has %d colored nodes, they are listed below:' %len(coloredList))
 	print(coloredList)
@@ -95,7 +94,6 @@ def remove_a_node(graph, removedNode, coloredList, blankList):
 def add_a_node(graph, addedNode, coloredList, blankList):
 	graph.node[addedNode]['color'] = 'colored'
 	for j in graph.adj[addedNode]:
-		# if graph.node[j]['color'] == 'colored':
 		graph.node[j]['edgeOtherSideNotColored'] -= 1
 		if graph.node[j]['color'] == 'blank':
 			graph.edges[addedNode, j].update({'coloredEnd': 1})
@@ -104,18 +102,11 @@ def add_a_node(graph, addedNode, coloredList, blankList):
 	coloredList.append(addedNode)
 	blankList.remove(addedNode)
 	
-def local_search(graph, coloredList, blankList, removedNodesTheStep):
+def local_search(graph, coloredList, blankList, iteration, seed):
 	judge = 0
 	edgeList = graph.edges.data()
 
 	findSolution = 1
-	# for j in blankList:
-	# 	if graph.node[j]['edgeOtherSideNotColored'] != 0:  # an edge of j not covered
-	# 		findSolution = 0
-	# 		break
-	# if findSolution == 1:
-	# 	judge = 1
-	# 	return judge  # no need to search: this is a solution
 
 	allMovingPairs = []
 	minNode = -1
@@ -124,14 +115,16 @@ def local_search(graph, coloredList, blankList, removedNodesTheStep):
 		if graph.node[i]['edgeOtherSideNotColored'] <= minEdgeOtherSideNotColored:
 			minNode = i
 			minEdgeOtherSideNotColored = graph.node[i]['edgeOtherSideNotColored']
-	# for i in coloredList:
-	random.shuffle(blankList)
-	for j in blankList:
-		# if graph.node[j]['edgeOtherSideNotColored'] != 0:  # an edge of j not covered
-		# 	allMovingPairs.append([i, j])  # search: removing a colored node, adding a blank node
-		allMovingPairs.append([minNode, j])  # search: removing a colored node, adding a blank node
+	minNodeList = []
+	for i in coloredList:
+		if graph.node[i]['edgeOtherSideNotColored'] == minEdgeOtherSideNotColored:
+			minNodeList.append(i)
+	print('minNodeList has %d nodes'%len(minNodeList))
 
-	for pair in allMovingPairs:
+	count = 1
+	while (judge == 0) & (count <= len(blankList)):
+		pair = [minNodeList[count%len(minNodeList)], blankList[(count*seed + 3 + iteration)%len(blankList)]]
+		print('(count*(seed + 1) + 3 + iteration) is %d'%(count*(seed + 1) + 3 + iteration))
 		findSolution = 1
 		pair0edgeOtherSideNotColored = graph.node[pair[0]]['edgeOtherSideNotColored']
 		remove_a_node(graph, pair[0], coloredList, blankList)
@@ -142,12 +135,10 @@ def local_search(graph, coloredList, blankList, removedNodesTheStep):
 				add_a_node(graph, pair[0], coloredList, blankList)
 				remove_a_node(graph, pair[1], coloredList, blankList)
 				break
-		# print('try removing node %d and adding node %d, findSolution is %d' %(pair[0], pair[1], findSolution))
+		count += 1
 		if findSolution == 1:
+			print('remove node %d, add node %d' %(pair[0], pair[1]))
 			judge = 1
-			# coloredList.remove(pair[0])
-			# coloredList.append(pair[1])
-			# blankList.remove(pair[1])
-			# blankList.append(pair[0])
 			return judge
 	return judge
+
