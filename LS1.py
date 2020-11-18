@@ -1,15 +1,12 @@
 import networkx as nx
 import time
-# import random
-# from random import shuffle
-# from itertools import combinations
+
 
 def LS1(graph, timeLimit, seed):
 	print('LS1 local search ### method\n')
 	startTime = time.clock()
 	timeNow = time.clock() - startTime
 	judge = 1
-	# k = graph.number_of_nodes()
 	k, coloredList, blankList = initialize_solution(graph)
 	# print(graph._node)
 	# print(graph.edges.data())
@@ -18,21 +15,21 @@ def LS1(graph, timeLimit, seed):
 	removedNodes = []
 	while (judge == 1) & (timeNow < timeLimit):
 		removedNodes = remove_nodes(graph, nodeRemovePerStep, coloredList, blankList)
-		print('nodes removed in iteration %d:' %iteration)
+		print('at %f, nodes removed in iteration %d:' %(time.clock() - startTime, iteration))
 		for j in removedNodes:
 			print(j)
 		# print(graph._node)
 		# print(graph.edges.data())
-		judge = local_search(graph, coloredList, blankList, iteration, seed)
+		judge = local_search(graph, coloredList, blankList, iteration, seed, startTime)
 		timeNow = time.clock() - startTime
-		print('judge is %d, timeNow is %f, timeLimit is %f' %(judge, timeNow, timeLimit))
+		# print('judge is %d, timeNow is %f, timeLimit is %f' %(judge, timeNow, timeLimit))
 		k -= nodeRemovePerStep
 		iteration += 1
 	add_nodes(graph, removedNodes, coloredList, blankList)
 	print('final solution has %d colored nodes, they are listed below:' %len(coloredList))
 	print(coloredList)
 	# print(graph.edges.data())
-	print('time spent on LS1 is %f s\n' %timeNow)
+	print('time spent on LS1 is %f s\n' %(timeNow - startTime))
 
 def initialize_solution(graph):
 	coloredNode = 0
@@ -102,29 +99,39 @@ def add_a_node(graph, addedNode, coloredList, blankList):
 	coloredList.append(addedNode)
 	blankList.remove(addedNode)
 	
-def local_search(graph, coloredList, blankList, iteration, seed):
+def local_search(graph, coloredList, blankList, iteration, seed, inputStartTime):
 	judge = 0
 	edgeList = graph.edges.data()
 
 	findSolution = 1
 
-	allMovingPairs = []
-	minNode = -1
+	minColoredNode = -1
 	minEdgeOtherSideNotColored = graph.number_of_edges()
 	for i in coloredList:
 		if graph.node[i]['edgeOtherSideNotColored'] <= minEdgeOtherSideNotColored:
-			minNode = i
+			minColoredNode = i
 			minEdgeOtherSideNotColored = graph.node[i]['edgeOtherSideNotColored']
-	minNodeList = []
+	minColoredNodeList = []
 	for i in coloredList:
 		if graph.node[i]['edgeOtherSideNotColored'] == minEdgeOtherSideNotColored:
-			minNodeList.append(i)
-	print('minNodeList has %d nodes'%len(minNodeList))
+			minColoredNodeList.append(i)
+	# print('minColoredNodeList has %d nodes'%len(minColoredNodeList))
+	maxBlankNode = 1
+	maxEdgeOtherSideNotColored = -1
+	for j in blankList:
+		if graph.node[j]['edgeOtherSideNotColored'] >= maxEdgeOtherSideNotColored:
+			maxBlankNode = j
+			maxEdgeOtherSideNotColored = graph.node[j]['edgeOtherSideNotColored']
+	maxBlankNodeList = []
+	for j in blankList:
+		if graph.node[j]['edgeOtherSideNotColored'] == maxEdgeOtherSideNotColored:
+			maxBlankNodeList.append(j)
+	# print('maxBlankNodeList has %d nodes'%len(maxBlankNodeList))
 
 	count = 1
-	while (judge == 0) & (count <= len(blankList)):
-		pair = [minNodeList[count%len(minNodeList)], blankList[(count*seed + 3 + iteration)%len(blankList)]]
-		print('(count*(seed + 1) + 3 + iteration) is %d'%(count*(seed + 1) + 3 + iteration))
+	while (judge == 0) & (count <= len(minColoredNodeList)*len(maxBlankNodeList)):
+		pair = [minColoredNodeList[(count + seed)%len(minColoredNodeList)], maxBlankNodeList[(count*seed + iteration)%len(maxBlankNodeList)]]
+		# print('(count*(seed + 1) + 3 + iteration) is %d'%(count*(seed + 1) + 3 + iteration))
 		findSolution = 1
 		pair0edgeOtherSideNotColored = graph.node[pair[0]]['edgeOtherSideNotColored']
 		remove_a_node(graph, pair[0], coloredList, blankList)
@@ -137,7 +144,7 @@ def local_search(graph, coloredList, blankList, iteration, seed):
 				break
 		count += 1
 		if findSolution == 1:
-			print('remove node %d, add node %d' %(pair[0], pair[1]))
+			print('at %f, remove node %d, add node %d' %(time.clock() - inputStartTime, pair[0], pair[1]))
 			judge = 1
 			return judge
 	return judge
