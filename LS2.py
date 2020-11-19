@@ -21,12 +21,7 @@ def LS2(graph, cut_time, seed):
                 temp_set.remove(random_vertex)
             else:
                 temp_set.add(random_vertex)
-            is_valid = True
-            for u, v in graph.edges():
-                if (u not in temp_set and v not in temp_set):
-                    is_valid = False
-                    break
-            if is_valid:
+            if isValid(temp_set, graph.edges):
                 break
         old_cost = len(vertex_set)
         new_cost = len(temp_set)
@@ -36,5 +31,12 @@ def LS2(graph, cut_time, seed):
             if new_cost < old_cost:
                 trace.append(str(timeit.default_timer() - start_time) + ',' + str(new_cost))
         T = T * alpha
+    print(len(vertex_set))
     return trace
+
+def isValid(curSet, edges):
+    for u, v in edges:
+        if (u not in curSet and v not in curSet):
+            return False
+    return True
 
