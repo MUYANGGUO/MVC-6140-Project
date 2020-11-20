@@ -79,3 +79,12 @@ python3 MVC.py './DATA/football.graph' 'BnB' 2.0 1
 ```bash
 bash experiments.sh
 ```
+### Generating Plots:
+
+Go to plot.py, modify the inputs.
+
+Example:
+
+```python
+plot('LS2',[10.0, 50.0, 250.0, 500.0] , 1)
+```
