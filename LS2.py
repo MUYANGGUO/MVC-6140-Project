@@ -1,5 +1,5 @@
 import numpy as np
-import timeit
+import time
 def LS2(graph, cut_time, seed):
     print('LS2 local search Simulated Annealing method\n')
     # initialization
@@ -8,8 +8,8 @@ def LS2(graph, cut_time, seed):
     vertex_set = set(graph.nodes)
     T = 1.0
     alpha = 0.90
-    start_time = timeit.default_timer()
-    while timeit.default_timer() - start_time < cut_time:
+    start_time = time.time()
+    while time.time() - start_time < cut_time:
         non_visited = set(graph.nodes)
         while True:
             if len(non_visited) == 0:
@@ -29,7 +29,7 @@ def LS2(graph, cut_time, seed):
         if acceptance_probability > np.random.random():
             vertex_set= temp_set
             if new_cost < old_cost:
-                trace.append(str(timeit.default_timer() - start_time) + ',' + str(new_cost))
+                trace.append(str(time.time() - start_time) + ',' + str(new_cost))
         T = T * alpha
     print(len(vertex_set))
     return trace

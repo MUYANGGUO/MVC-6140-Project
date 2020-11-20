@@ -30,9 +30,12 @@ def parseArguments():
 def getGraph(filename):
     G = nx.Graph()
     vertex_ind = 0
+    IndependentNodes = set()
     with open(filename, 'r') as file:
         for line in file:
             edge_data = list(map(lambda x: int(x), line.split()))
+            if not edge_data:
+                IndependentNodes.add(vertex_ind)
             if vertex_ind == 0:
                 vertex_num = edge_data[0]
                 edge_num = edge_data[1]
@@ -41,7 +44,8 @@ def getGraph(filename):
                 for v in edge_data:
                     G.add_edge(vertex_ind, v)
             vertex_ind = vertex_ind + 1
-        assert vertex_num == G.number_of_nodes()
+
+        assert len(IndependentNodes) + G.number_of_nodes() == vertex_num
         assert edge_num == G.number_of_edges()
     return G
 
