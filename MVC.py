@@ -45,8 +45,8 @@ def getGraph(filename):
                     G.add_edge(vertex_ind, v)
             vertex_ind = vertex_ind + 1
 
-        assert len(IndependentNodes) + G.number_of_nodes() == vertex_num
-        assert edge_num == G.number_of_edges()
+        # assert len(IndependentNodes) + G.number_of_nodes() == vertex_num
+        # assert edge_num == G.number_of_edges()
     return G
 
 def write_out(vertex_cover_set, trace_history, filename, alg, time, seed):
