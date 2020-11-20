@@ -3,7 +3,6 @@ import os
 import glob
 import matplotlib.pyplot as plt
 
-
 def plot(alg, times, seed):
     Data = dict()
     files = []
@@ -45,4 +44,6 @@ def plot(alg, times, seed):
     if not os.path.exists('./output_plots'):
         os.makedirs('./output_plots')
     fig.savefig("./output_plots/" + alg +".png", dpi =120)
+
+# modify this line to plot your method outputs
 plot('LS2',[10.0, 50.0, 250.0, 500.0] , 1)
