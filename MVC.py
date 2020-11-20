@@ -6,10 +6,8 @@ import argparse
 import numpy as np
 import math as math
 import networkx as nx
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-from collections import OrderedDict
-import json
+
 # modules
 from BnB import BnB
 from LS1 import LS1
