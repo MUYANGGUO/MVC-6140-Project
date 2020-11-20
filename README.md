@@ -42,9 +42,9 @@ python3 MVC.py './DATA/football.graph' 'BnB' 2.0 1
 ├── README.md
 ├── LICENSE
  - - - - - - -Output Folder  - - - - - - - 
-├── outputs (outputs folder, for submission)
-|   └── Solution Files
-|   └── Solution Trace Files
+├── output (outputs folder, for submission)
+|   └── Solution Files (*.sol)
+|   └── Solution Trace Files (*.trace)
  - - - - - - - - - - - - - - - - - - - - -
 |
 └── report (report folder)
@@ -73,4 +73,9 @@ python3 MVC.py './DATA/football.graph' 'BnB' 2.0 1
 │   └── star2.graph
  - - - - - - - - - - - - - - - - - - - -
 
+```
+
+## Running Tests:
+```bash
+bash experiments.sh
 ```
