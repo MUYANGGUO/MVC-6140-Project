@@ -79,12 +79,16 @@ python3 MVC.py './DATA/football.graph' 'BnB' 2.0 1
 ```bash
 bash experiments.sh
 ```
-### Generating Plots:
 
-Go to plot.py, modify the inputs.
+## Generating Plots:
+
+Go to plot.py, modify the inputs. 
+
+The plot.py will traverse thru all the outputs files, and parse them, feed only the files that satisfy the input conditions (i.e. Algorithm matched, cut time sequence matched, seed number matched. 
+) to the plots data and plot. 
 
 Example:
 
 ```python
-plot('LS2',[10.0, 50.0, 250.0, 500.0] , 1)
+plot('LS2', [10.0, 50.0, 250.0, 500.0], 1)
 ```
