@@ -18,6 +18,9 @@ def LS1(graph, timeLimit, seed):
 	while (judge == 1) & (timeNow < timeLimit):
 		trace.append(str(time.time() - startTime) + ',' + str(k))
 		removedNodes = remove_nodes(graph, nodeRemovePerStep, coloredSet, blankSet)
+		# print('nodes removed in iteration %d:' % iteration)
+		# for j in removedNodes:
+		# 	print(j)
 		judge = local_search(graph, coloredSet, blankSet, iteration, seed, startTime)
 		timeNow = time.time() - startTime
 		k -= nodeRemovePerStep
@@ -96,6 +99,7 @@ def add_a_node(graph, addedNode, coloredSet, blankSet):
 			graph.edges[addedNode, j].update({'coloredEnd': 2})
 	coloredSet.add(addedNode)
 	blankSet.remove(addedNode)
+	# blankSet.discard(addedNode)
 	
 def local_search(graph, coloredSet, blankSet, iteration, seed, inputStartTime):
 	judge = 0
@@ -128,7 +132,8 @@ def local_search(graph, coloredSet, blankSet, iteration, seed, inputStartTime):
 
 	count = 1
 	while (judge == 0) & (count <= len(minColoredNodeList)*len(maxBlankNodeList)):
-		pair = [minColoredNodeList[(count + seed)%len(minColoredNodeList)], maxBlankNodeList[(count*seed + iteration)%len(maxBlankNodeList)]]
+		pair = [minColoredNodeList[(count + seed)%len(minColoredNodeList)], maxBlankNodeList[(count*seed*2 + iteration*2)%len(maxBlankNodeList)]]
+		# print('count is %d, seed is %d, iter is %d, add seed is %d'%(count, seed, iteration, (count*seed*2 + iteration*2)%len(maxBlankNodeList)))
 		findSolution = 1
 		pair0edgeOtherSideNotColored = graph.nodes[pair[0]]['edgeOtherSideNotColored']
 		remove_a_node(graph, pair[0], coloredSet, blankSet)
@@ -141,7 +146,7 @@ def local_search(graph, coloredSet, blankSet, iteration, seed, inputStartTime):
 				break
 		count += 1
 		if findSolution == 1:
-			# print('at %f, remove node %d, add node %d' %(time.time() - inputStartTime, pair[0], pair[1]))
+			# print('remove node %d, add node %d' %(pair[0], pair[1]))
 			judge = 1
 			return judge
 	return judge
