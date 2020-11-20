@@ -49,17 +49,43 @@ def getGraph(filename):
         assert edge_num == G.number_of_edges()
     return G
 
+def write_out(vertex_cover_set, trace_history, filename, alg, time, seed):
+        if not os.path.exists('./output'):
+            os.makedirs('./output')
+        solution = open('./output/' + os.path.splitext(os.path.basename(filename))[0] +
+                '_' + alg + 
+                '_' + str(time) + 
+                '_' + str(seed) + 
+                '.sol', 'w')
+        solution.write(str(len(vertex_cover_set)) + '\n')
+        solution.write(','.join(map(str, list(vertex_cover_set))))
+        solution.close()
+        trace = open('./output/' + os.path.splitext(os.path.basename(filename))[0] +
+                '_' + alg + 
+                '_' + str(time) + 
+                '_' + str(seed) + 
+                '.trace', 'w')
+        for history in trace_history:
+            trace.write(history + '\n')
+        trace.close()
+
 
 def main(filename, alg, time, seed):
     graph = getGraph(filename)
     if alg == 'BnB':
-        BnB(graph, time)
+        vertex_cover_set, trace_history = BnB(graph, time)
+        write_out(vertex_cover_set, trace_history, filename, alg, time, seed)
     elif alg == 'LS1':
-        LS1(graph, time, seed)
+        vertex_cover_set, trace_history = LS1(graph, time, seed)
+        write_out(vertex_cover_set, trace_history, filename, alg, time, seed)
+
     elif alg == 'LS2':
-        LS2(graph, time, seed)
+        vertex_cover_set, trace_history = LS2(graph, time, seed)
+        write_out(vertex_cover_set, trace_history, filename, alg, time, seed)
     else:
-        Approx(graph, time, seed)
+        vertex_cover_set, trace_history = Approx(graph, time, seed)
+        write_out(vertex_cover_set, trace_history, filename, alg, time, seed)
+
     print('...done!')
 
 if __name__ == '__main__':

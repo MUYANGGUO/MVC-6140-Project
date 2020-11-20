@@ -31,8 +31,8 @@ def LS2(graph, cut_time, seed):
             if new_cost < old_cost:
                 trace.append(str(time.time() - start_time) + ',' + str(new_cost))
         T = T * alpha
-    print(len(vertex_set))
-    return trace
+    
+    return vertex_set, trace
 
 def isValid(curSet, edges):
     for u, v in edges:
