@@ -23,15 +23,15 @@ def plot(alg, times, seed):
                     name = ''.join(attributes[:i + 1])
             if alg_exp != alg or time_exp != time or seed_exp != seed:
                 continue
-            else:
-                with open(file_name, 'r') as file:
-                    mvc_quality = int(file.readline())
-                    if name not in Data:
-                        Data[name] = [mvc_quality]
-                    else:
-                        Data[name].append(mvc_quality)
+            with open(file_name, 'r') as file:
+                mvc_quality = int(file.readline())
+                if name not in Data:
+                    Data[name] = [mvc_quality]
+                else:
+                    Data[name].append(mvc_quality)
+
     fig, ax = plt.subplots()
-    fig.set_figheight(4)
+    fig.set_figheight(8)
     fig.set_figwidth(16)
     x = times
     ax.set(xlabel='time (s)', ylabel='MVC quality',
