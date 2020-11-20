@@ -20,7 +20,10 @@ def plot(alg, times, seed):
                 elif i == n - 3:
                     alg_exp = attributes[i]
                 else:
-                    name = ''.join(attributes[:i + 1])
+                    if i > 0:
+                        name = '_'.join(attributes[:i + 1])
+                    else:
+                        name = ''.join(attributes[:i + 1])
                     break
             if alg_exp != alg or time_exp != time or seed_exp != seed:
                 continue
