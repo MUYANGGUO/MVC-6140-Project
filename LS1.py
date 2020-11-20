@@ -4,102 +4,100 @@ import time
 
 def LS1(graph, timeLimit, seed):
 	print('LS1 local search ### method\n')
-	startTime = time.clock()
-	timeNow = time.clock() - startTime
+	# print(nx.__version__)
+	startTime = time.time()
+	timeNow = time.time() - startTime
+	trace = []
 	judge = 1
 	k, coloredList, blankList = initialize_solution(graph)
-	# print(graph._node)
-	# print(graph.edges.data())
+	coloredSet = set(coloredList)
+	blankSet = set(blankList)
 	nodeRemovePerStep = 1
 	iteration = 1
 	removedNodes = []
 	while (judge == 1) & (timeNow < timeLimit):
-		removedNodes = remove_nodes(graph, nodeRemovePerStep, coloredList, blankList)
-		print('at %f, nodes removed in iteration %d:' %(time.clock() - startTime, iteration))
-		for j in removedNodes:
-			print(j)
-		# print(graph._node)
-		# print(graph.edges.data())
-		judge = local_search(graph, coloredList, blankList, iteration, seed, startTime)
-		timeNow = time.clock() - startTime
-		# print('judge is %d, timeNow is %f, timeLimit is %f' %(judge, timeNow, timeLimit))
+		trace.append(str(time.time() - startTime) + ',' + str(k))
+		removedNodes = remove_nodes(graph, nodeRemovePerStep, coloredSet, blankSet)
+		judge = local_search(graph, coloredSet, blankSet, iteration, seed, startTime)
+		timeNow = time.time() - startTime
 		k -= nodeRemovePerStep
 		iteration += 1
-	add_nodes(graph, removedNodes, coloredList, blankList)
-	print('final solution has %d colored nodes, they are listed below:' %len(coloredList))
-	print(coloredList)
-	# print(graph.edges.data())
-	print('time spent on LS1 is %f s\n' %(timeNow - startTime))
+	k += nodeRemovePerStep
+	add_nodes(graph, removedNodes, coloredSet, blankSet)
+	print('time spent on LS1 is %f s\n' %(time.time() - startTime))
+	
+	return coloredSet, trace
 
 def initialize_solution(graph):
 	coloredNode = 0
 	coloredList = []
+	nodeList = graph.nodes
 	edgeList = graph.edges
-	for i in range(1, graph.number_of_nodes() + 1):  # index of vertices [1, graph.number_of_nodes()]
-		graph.node[i]['color'] = 'blank'
-		graph.node[i]['edgeOtherSideNotColored'] = 0
+	for i in nodeList:  # index of vertices [1, graph.number_of_nodes()]
+		graph.nodes[i]['color'] = 'blank'
+		graph.nodes[i]['edgeOtherSideNotColored'] = 0
 
 	for anEdge in edgeList:
-		if graph.node[anEdge[0]]['color'] == 'blank':
-			graph.node[anEdge[0]]['color'] = 'colored'
+		if graph.nodes[anEdge[0]]['color'] == 'blank':
+			graph.nodes[anEdge[0]]['color'] = 'colored'
 			coloredNode += 1
 			coloredList.append(anEdge[0])
 	for anEdge in edgeList:
-		if (graph.node[anEdge[0]]['color'] == 'colored') & (graph.node[anEdge[1]]['color'] == 'colored'):
+		if (graph.nodes[anEdge[0]]['color'] == 'colored') & (graph.nodes[anEdge[1]]['color'] == 'colored'):
 			graph.edges[anEdge[0],anEdge[1]].update({'coloredEnd': 2})
 		else:
 			graph.edges[anEdge[0],anEdge[1]].update({'coloredEnd': 1})
-			if graph.node[anEdge[0]]['color'] == 'colored':
-				graph.node[anEdge[0]]['edgeOtherSideNotColored'] += 1
+			if graph.nodes[anEdge[0]]['color'] == 'colored':
+				graph.nodes[anEdge[0]]['edgeOtherSideNotColored'] += 1
 			else:
-				graph.node[anEdge[1]]['edgeOtherSideNotColored'] += 1
-	blankList = [x for x in range(1, graph.number_of_nodes() + 1)]
+				graph.nodes[anEdge[1]]['edgeOtherSideNotColored'] += 1
+	blankList = list(graph.nodes)
 	for i in coloredList:
 		blankList.remove(i)
 	print('%d nodes are selected in initialization.\n' %coloredNode)
 	return coloredNode, coloredList, blankList
 
 
-def remove_nodes(graph, nodeDecStep, coloredList, blankList):
+def remove_nodes(graph, nodeDecStep, coloredSet, blankSet):
 	removedNode = []
 	for l in range(nodeDecStep):
 		minNode = -1
 		minEdgeOtherSideNotColored = graph.number_of_edges()
-		for i in coloredList:
-			if graph.node[i]['edgeOtherSideNotColored'] <= minEdgeOtherSideNotColored:
+		for i in coloredSet:
+			if graph.nodes[i]['edgeOtherSideNotColored'] <= minEdgeOtherSideNotColored:
 				minNode = i
-				minEdgeOtherSideNotColored = graph.node[i]['edgeOtherSideNotColored']
+				minEdgeOtherSideNotColored = graph.nodes[i]['edgeOtherSideNotColored']
 		removedNode.append(minNode)
-		remove_a_node(graph, minNode, coloredList, blankList)
+		remove_a_node(graph, minNode, coloredSet, blankSet)
 	return removedNode
 
-def add_nodes(graph, nodesToBeAdded, coloredList, blankList):
+def add_nodes(graph, nodesToBeAdded, coloredSet, blankSet):
 	for i in nodesToBeAdded:
-		add_a_node(graph, i, coloredList, blankList)
+		add_a_node(graph, i, coloredSet, blankSet)
 
-def remove_a_node(graph, removedNode, coloredList, blankList):
-	graph.node[removedNode]['color'] = 'blank'
+def remove_a_node(graph, removedNode, coloredSet, blankSet):
+	graph.nodes[removedNode]['color'] = 'blank'
 	for j in graph.adj[removedNode]:
-		graph.node[j]['edgeOtherSideNotColored'] += 1
-		if graph.node[j]['color'] == 'blank':
+		graph.nodes[j]['edgeOtherSideNotColored'] += 1
+		if graph.nodes[j]['color'] == 'blank':
 			graph.edges[removedNode, j].update({'coloredEnd': 0})
 		else:
 			graph.edges[removedNode, j].update({'coloredEnd': 1})
-	coloredList.remove(removedNode)
-	blankList.append(removedNode)
+	coloredSet.remove(removedNode)
+	blankSet.add(removedNode)
 
-def add_a_node(graph, addedNode, coloredList, blankList):
-	graph.node[addedNode]['color'] = 'colored'
+def add_a_node(graph, addedNode, coloredSet, blankSet):
+	graph.nodes[addedNode]['color'] = 'colored'
 	for j in graph.adj[addedNode]:
-		graph.node[j]['edgeOtherSideNotColored'] -= 1
-		if graph.node[j]['color'] == 'blank':
+		graph.nodes[j]['edgeOtherSideNotColored'] -= 1
+		if graph.nodes[j]['color'] == 'blank':
 			graph.edges[addedNode, j].update({'coloredEnd': 1})
 		else:
 			graph.edges[addedNode, j].update({'coloredEnd': 2})
-	coloredList.append(addedNode)
-	blankList.remove(addedNode)
+	coloredSet.add(addedNode)
+	blankSet.remove(addedNode)
 	
-def local_search(graph, coloredList, blankList, iteration, seed, inputStartTime):
+def local_search(graph, coloredSet, blankSet, iteration, seed, inputStartTime):
 	judge = 0
 	edgeList = graph.edges.data()
 
@@ -107,44 +105,43 @@ def local_search(graph, coloredList, blankList, iteration, seed, inputStartTime)
 
 	minColoredNode = -1
 	minEdgeOtherSideNotColored = graph.number_of_edges()
-	for i in coloredList:
-		if graph.node[i]['edgeOtherSideNotColored'] <= minEdgeOtherSideNotColored:
+	for i in coloredSet:
+		if graph.nodes[i]['edgeOtherSideNotColored'] <= minEdgeOtherSideNotColored:
 			minColoredNode = i
-			minEdgeOtherSideNotColored = graph.node[i]['edgeOtherSideNotColored']
+			minEdgeOtherSideNotColored = graph.nodes[i]['edgeOtherSideNotColored']
 	minColoredNodeList = []
-	for i in coloredList:
-		if graph.node[i]['edgeOtherSideNotColored'] == minEdgeOtherSideNotColored:
+	for i in coloredSet:
+		if graph.nodes[i]['edgeOtherSideNotColored'] == minEdgeOtherSideNotColored:
 			minColoredNodeList.append(i)
 	# print('minColoredNodeList has %d nodes'%len(minColoredNodeList))
 	maxBlankNode = 1
 	maxEdgeOtherSideNotColored = -1
-	for j in blankList:
-		if graph.node[j]['edgeOtherSideNotColored'] >= maxEdgeOtherSideNotColored:
+	for j in blankSet:
+		if graph.nodes[j]['edgeOtherSideNotColored'] >= maxEdgeOtherSideNotColored:
 			maxBlankNode = j
-			maxEdgeOtherSideNotColored = graph.node[j]['edgeOtherSideNotColored']
+			maxEdgeOtherSideNotColored = graph.nodes[j]['edgeOtherSideNotColored']
 	maxBlankNodeList = []
-	for j in blankList:
-		if graph.node[j]['edgeOtherSideNotColored'] == maxEdgeOtherSideNotColored:
+	for j in blankSet:
+		if graph.nodes[j]['edgeOtherSideNotColored'] == maxEdgeOtherSideNotColored:
 			maxBlankNodeList.append(j)
 	# print('maxBlankNodeList has %d nodes'%len(maxBlankNodeList))
 
 	count = 1
 	while (judge == 0) & (count <= len(minColoredNodeList)*len(maxBlankNodeList)):
 		pair = [minColoredNodeList[(count + seed)%len(minColoredNodeList)], maxBlankNodeList[(count*seed + iteration)%len(maxBlankNodeList)]]
-		# print('(count*(seed + 1) + 3 + iteration) is %d'%(count*(seed + 1) + 3 + iteration))
 		findSolution = 1
-		pair0edgeOtherSideNotColored = graph.node[pair[0]]['edgeOtherSideNotColored']
-		remove_a_node(graph, pair[0], coloredList, blankList)
-		add_a_node(graph, pair[1], coloredList, blankList)
+		pair0edgeOtherSideNotColored = graph.nodes[pair[0]]['edgeOtherSideNotColored']
+		remove_a_node(graph, pair[0], coloredSet, blankSet)
+		add_a_node(graph, pair[1], coloredSet, blankSet)
 		for anEdge in edgeList:
 			if anEdge[2]['coloredEnd'] == 0:  # an edge not covered, anEdge['coloredEnd'] == 0
 				findSolution = 0
-				add_a_node(graph, pair[0], coloredList, blankList)
-				remove_a_node(graph, pair[1], coloredList, blankList)
+				add_a_node(graph, pair[0], coloredSet, blankSet)
+				remove_a_node(graph, pair[1], coloredSet, blankSet)
 				break
 		count += 1
 		if findSolution == 1:
-			print('at %f, remove node %d, add node %d' %(time.clock() - inputStartTime, pair[0], pair[1]))
+			# print('at %f, remove node %d, add node %d' %(time.time() - inputStartTime, pair[0], pair[1]))
 			judge = 1
 			return judge
 	return judge
