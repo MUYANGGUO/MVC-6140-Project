@@ -21,6 +21,7 @@ def plot(alg, times, seed):
                     alg_exp = attributes[i]
                 else:
                     name = ''.join(attributes[:i + 1])
+                    break
             if alg_exp != alg or time_exp != time or seed_exp != seed:
                 continue
             with open(file_name, 'r') as file:
