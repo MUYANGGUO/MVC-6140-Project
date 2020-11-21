@@ -27,9 +27,11 @@ def LS2(graph, cut_time, seed):
         new_cost = len(temp_set)
         acceptance_probability = np.exp(np.array((old_cost - new_cost) / T, dtype=np.float128))
         if acceptance_probability > np.random.random():
+            trace.append(str(time.time() - start_time) + ',' + str(new_cost))
             vertex_set= temp_set
-            if new_cost < old_cost:
-                trace.append(str(time.time() - start_time) + ',' + str(new_cost))
+        elif new_cost < old_cost:
+            trace.append(str(time.time() - start_time) + ',' + str(new_cost))
+            vertex_set= temp_set
         T = T * alpha
     
     return vertex_set, trace
