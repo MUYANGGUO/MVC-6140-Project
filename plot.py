@@ -50,4 +50,4 @@ def plot(alg, times, seed):
     fig.savefig("./output_plots/" + alg +".png", dpi =120)
 
 # modify this line to plot your method outputs
-plot('LS2',[10.0, 50.0, 250.0, 500.0] , 1)
+plot('LS2',[10.0, 50.0, 100.0, 500.0, 1000.0] , 1)
