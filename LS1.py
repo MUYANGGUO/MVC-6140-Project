@@ -108,7 +108,7 @@ def local_search(graph, coloredSet, blankSet, iteration, seed, inputStartTime, i
 		if graph.nodes[i]['edgeOtherSideNotColored'] <= minEdgeOtherSideNotColored:
 			minColoredNode = i
 			minEdgeOtherSideNotColored = graph.nodes[i]['edgeOtherSideNotColored']
-	minColoredNodeList = []
+	minColoredNodeList = []  # find the least important colored vertices
 	for i in coloredSet:
 		if graph.nodes[i]['edgeOtherSideNotColored'] == minEdgeOtherSideNotColored:
 			minColoredNodeList.append(i)
@@ -119,7 +119,7 @@ def local_search(graph, coloredSet, blankSet, iteration, seed, inputStartTime, i
 		if graph.nodes[j]['edgeOtherSideNotColored'] >= maxEdgeOtherSideNotColored:
 			maxBlankNode = j
 			maxEdgeOtherSideNotColored = graph.nodes[j]['edgeOtherSideNotColored']
-	maxBlankNodeList = []
+	maxBlankNodeList = []  # find the most important blank vertices
 	for j in blankSet:
 		if graph.nodes[j]['edgeOtherSideNotColored'] == maxEdgeOtherSideNotColored:
 			maxBlankNodeList.append(j)
@@ -130,13 +130,14 @@ def local_search(graph, coloredSet, blankSet, iteration, seed, inputStartTime, i
 
 	while (judge == 0) & (timeNow < inputTimeLimit):
 		pair = [minColoredNodeList[(count + seed)%len(minColoredNodeList)], maxBlankNodeList[(count*seed + iteration)%len(maxBlankNodeList)]]
+		# pair is the selected vertices. pair[0] needs to be restores and pair[1] needs to be colored
 		findSolution = 1
 		pair0edgeOtherSideNotColored = graph.nodes[pair[0]]['edgeOtherSideNotColored']
 		remove_a_node(graph, pair[0], coloredSet, blankSet)
 		add_a_node(graph, pair[1], coloredSet, blankSet)
 		for anEdge in edgeList:
 			if anEdge[2]['coloredEnd'] == 0:  # an edge not covered, anEdge['coloredEnd'] == 0
-				findSolution = 0
+				findSolution = 0  # this potential solution is not valid. prepare for trying a new potential solution in the next iteration
 				add_a_node(graph, pair[0], coloredSet, blankSet)
 				remove_a_node(graph, pair[1], coloredSet, blankSet)
 				break
