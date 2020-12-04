@@ -128,7 +128,7 @@ def local_search(graph, coloredSet, blankSet, iteration, seed, inputStartTime, i
 	count = 1
 	timeNow = time.time() - inputStartTime
 
-	while (judge == 0) & (timeNow < inputTimeLimit):
+	while (judge == 0) & (timeNow < inputTimeLimit) & (count < len(minColoredNodeList)*len(maxBlankNodeList)):
 		pair = [minColoredNodeList[(count + seed)%len(minColoredNodeList)], maxBlankNodeList[(count*seed + iteration)%len(maxBlankNodeList)]]
 		# pair is the selected vertices. pair[0] needs to be restores and pair[1] needs to be colored
 		findSolution = 1
