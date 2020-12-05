@@ -24,6 +24,9 @@ def Approx(graph, cutoff_time, seed):
 
 def dfs(i, visited: set, number_vertex: int, graph, non_leaf):
     visited.add(i)
+    if not graph.has_node(i):
+        non_leaf.add(i)
+        return
     for neighbor in list(graph[i]):
         if neighbor not in visited:
             visited.add(neighbor)
